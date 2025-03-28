@@ -19,7 +19,7 @@ public class Main {
 
         System.out.println(studentCRUD.readEntities());
 
-        System.out.println(studentCRUD.getEntityForId(4));
+        System.out.println(studentCRUD.getEntityForId(3));
 
         studentCRUD.deletedEntityForId(4);
     }
