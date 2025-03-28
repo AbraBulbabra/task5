@@ -20,6 +20,9 @@ public class Student {
         this.courseName = courseName;
     }
 
+    public Student() {
+    }
+
     @Override
     public String toString() {
         return "\nStudent{\n" +

@@ -12,16 +12,23 @@ import java.util.List;
 
 public class StudentCRUD extends CRUD<Student> {
 
+    private static String ALL_STUDENTS = "SELECT * FROM students";
+    private static String FIND_BY_ID_ENTITY = "SELECT * FROM students WHERE id = ?";
+    private static String INSERT_STUDENT = "INSERT INTO students(name, surname, course_name) VALUES (?,?,?)";
+    private static String UPDATE_STUDENT = "UPDATE students SET name = ?, surname = ?, course_name = ? WHERE id = ?";
+    private static String DELETED_STUDENT = "DELETE FROM students WHERE id = ?";
+
+
     public StudentCRUD() {
-        super(StarterDB.setConnection());
+        super(StarterDB.setConnection(), DELETED_STUDENT, ALL_STUDENTS);
     }
 
-    @Override
+/*    @Override
     public List<Student> readAll() {
         List<Student> students = new ArrayList<>();
 
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM students");
+            ResultSet resultSet = statement.executeQuery(ALL_STUDENTS);
 
             while (resultSet.next()) {
                 students.add(entityParsing(resultSet));
@@ -31,24 +38,60 @@ public class StudentCRUD extends CRUD<Student> {
             throw new RuntimeException(e);
         }
         return students;
+    }*/
+
+    public Student getEntityForId(int id) {
+        Student student = new Student();
+
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_ENTITY)) {
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+
+            if (resultSet.next()) {
+                student = entityParsing(resultSet);
+            } else {
+                throw new IndexOutOfBoundsException(String.format("Студента с id = %d нет в списке", id));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return student;
     }
 
     @Override
     public void createEntity(Student student) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO students(name, surname, course_name) VALUES (?,?,?)"
-        )) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_STUDENT)) {
 
-            preparedStatement.setString(1,student.getName());
-            preparedStatement.setString(2,student.getSurname());
-            preparedStatement.setString(3,student.getCourseName());
+            preparedStatement.setString(1, student.getName());
+            preparedStatement.setString(2, student.getSurname());
+            preparedStatement.setString(3, student.getCourseName());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    @Override
+    public void updateEntityForId(int id, Student student) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_STUDENT)) {
+
+            preparedStatement.setString(1, student.getName());
+            preparedStatement.setString(2, student.getSurname());
+            preparedStatement.setString(3, student.getCourseName());
+            preparedStatement.setInt(4, id);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
