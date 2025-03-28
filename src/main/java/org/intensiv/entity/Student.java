@@ -14,6 +14,12 @@ public class Student {
         this.courseName = courseName;
     }
 
+    public Student(String name, String surname, String courseName) {
+        this.name = name;
+        this.surname = surname;
+        this.courseName = courseName;
+    }
+
     @Override
     public String toString() {
         return "\nStudent{\n" +

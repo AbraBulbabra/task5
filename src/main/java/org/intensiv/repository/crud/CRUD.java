@@ -7,11 +7,13 @@ import java.util.List;
 public abstract class CRUD<T> {
     protected Connection connection;
 
-    public CRUD(Connection connection) {
+    CRUD(Connection connection) {
         this.connection = connection;
     }
 
-   public abstract List<T> readAll();
+    public abstract List<T> readAll();
+
+    public abstract void createEntity(T t);
 
     protected abstract T entityParsing(ResultSet entity);
 }
