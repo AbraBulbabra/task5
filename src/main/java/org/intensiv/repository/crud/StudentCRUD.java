@@ -20,47 +20,7 @@ public class StudentCRUD extends CRUD<Student> {
 
 
     public StudentCRUD() {
-        super(StarterDB.setConnection(), DELETED_STUDENT, ALL_STUDENTS);
-    }
-
-/*    @Override
-    public List<Student> readAll() {
-        List<Student> students = new ArrayList<>();
-
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(ALL_STUDENTS);
-
-            while (resultSet.next()) {
-                students.add(entityParsing(resultSet));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return students;
-    }*/
-
-    public Student getEntityForId(int id) {
-        Student student = new Student();
-
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_ENTITY)) {
-
-            preparedStatement.setInt(1, id);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-
-            if (resultSet.next()) {
-                student = entityParsing(resultSet);
-            } else {
-                throw new IndexOutOfBoundsException(String.format("Студента с id = %d нет в списке", id));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return student;
+        super(StarterDB.setConnection(), DELETED_STUDENT, ALL_STUDENTS, FIND_BY_ID_ENTITY);
     }
 
     @Override

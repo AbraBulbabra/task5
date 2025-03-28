@@ -10,14 +10,16 @@ import java.util.List;
 
 public abstract class CRUD<T> {
     protected Connection connection;
-    protected String deletedQwery;
+    private String deletedQwery;
     private String getAll;
+    private String findByIdEntity;
 
 
-    CRUD(Connection connection, String deletedQwery, String getAll) {
+    CRUD(Connection connection, String deletedQwery, String getAll, String findByIdEntity) {
         this.connection = connection;
         this.deletedQwery = deletedQwery;
         this.getAll = getAll;
+        this.findByIdEntity = findByIdEntity;
     }
 
     public  List<T> readEntities() {
@@ -36,7 +38,23 @@ public abstract class CRUD<T> {
         return tList;
     }
 
-    public abstract T getEntityForId(int id);
+    public T getEntityForId(int id){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(findByIdEntity)) {
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+
+            if (resultSet.next()) {
+                return entityParsing(resultSet);
+            } else {
+                throw new IndexOutOfBoundsException(String.format("id = %d нет в списке", id));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public abstract void createEntity(T t);
 

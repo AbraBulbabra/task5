@@ -21,6 +21,8 @@ public class Main {
 
         System.out.println(studentCRUD.getEntityForId(3));
 
+        Student stud = studentCRUD.getEntityForId(2);
+
         studentCRUD.deletedEntityForId(4);
     }
 }
