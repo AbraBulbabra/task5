@@ -1,28 +1,23 @@
 package org.intensiv;
 
-import org.intensiv.entity.Student;
-import org.intensiv.repository.crud.CRUD;
-import org.intensiv.repository.crud.StudentCRUD;
+import org.intensiv.jdbc.starter.StarterDB;
+import org.intensiv.service.StudentService;
 
 public class Main {
     public static void main(String[] args) {
 
-        CRUD<Student> studentCRUD = new StudentCRUD();
+        StudentService studentService = new StudentService(StarterDB.getConnection());
 
-        System.out.println(studentCRUD.readEntities());
+        System.out.println(studentService.getStudents());
 
-        studentCRUD.createEntity(new Student("Pablo", "Abelardo", "Prolog"));
+        studentService.chengEmailOfStudent(2,"alexYT@gmail.com");
 
-        System.out.println(studentCRUD.readEntities());
+        System.out.println("-------------");
+        System.out.println(studentService.getStudents());
 
-        studentCRUD.updateEntityForId(2, new Student("Arlicino", "Ocon", "Swift"));
+        studentService.chengNameOfStudent(2,"Alex");
 
-        System.out.println(studentCRUD.readEntities());
-
-        System.out.println(studentCRUD.getEntityForId(3));
-
-        Student stud = studentCRUD.getEntityForId(2);
-
-        studentCRUD.deletedEntityForId(4);
+        System.out.println("-------------");
+        System.out.println(studentService.getStudents());
     }
 }

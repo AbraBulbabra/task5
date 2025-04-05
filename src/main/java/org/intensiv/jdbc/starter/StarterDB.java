@@ -31,7 +31,7 @@ public class StarterDB {
         }
     }
 
-    public static Connection setConnection() {
+    public static Connection getConnection() {
         if (connection == null) {
             new StarterDB();
         }

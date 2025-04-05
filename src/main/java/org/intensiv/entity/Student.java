@@ -5,19 +5,19 @@ public class Student {
     private int id;
     private String name;
     private String surname;
-    private String courseName;
+    private String emailStudent;
 
-    public Student(int id, String name, String surname, String courseName) {
+    public Student(int id, String name, String surname, String emailStudent) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.courseName = courseName;
+        this.emailStudent = emailStudent;
     }
 
-    public Student(String name, String surname, String courseName) {
+    public Student(String name, String surname, String emailStudent) {
         this.name = name;
         this.surname = surname;
-        this.courseName = courseName;
+        this.emailStudent = emailStudent;
     }
 
     public Student() {
@@ -29,7 +29,7 @@ public class Student {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", courseName='" + courseName + '\'' +
+                ", email student='" + emailStudent + '\'' +
                 "\n" +
                 '}';
     }
@@ -58,11 +58,11 @@ public class Student {
         this.surname = surname;
     }
 
-    public String getCourseName() {
-        return courseName;
+    public String getEmailStudent() {
+        return emailStudent;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public void setEmailStudent(String emailStudent) {
+        this.emailStudent = emailStudent;
     }
 }

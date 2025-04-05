@@ -3,24 +3,26 @@ package org.intensiv.repository.crud;
 import org.intensiv.entity.Student;
 import org.intensiv.jdbc.starter.StarterDB;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class StudentCRUD extends CRUD<Student> {
 
     private static String ALL_STUDENTS = "SELECT * FROM students";
     private static String FIND_BY_ID_ENTITY = "SELECT * FROM students WHERE id = ?";
-    private static String INSERT_STUDENT = "INSERT INTO students(name, surname, course_name) VALUES (?,?,?)";
-    private static String UPDATE_STUDENT = "UPDATE students SET name = ?, surname = ?, course_name = ? WHERE id = ?";
+    private static String INSERT_STUDENT = "INSERT INTO students(name, surname, email_student) VALUES (?,?,?)";
+    private static String UPDATE_STUDENT = "UPDATE students SET name = ?, surname = ?, email_student = ? WHERE id = ?";
     private static String DELETED_STUDENT = "DELETE FROM students WHERE id = ?";
 
 
     public StudentCRUD() {
-        super(StarterDB.setConnection(), DELETED_STUDENT, ALL_STUDENTS, FIND_BY_ID_ENTITY);
+        super(StarterDB.getConnection(), DELETED_STUDENT, ALL_STUDENTS, FIND_BY_ID_ENTITY);
+    }
+
+    public StudentCRUD(Connection connection) {
+        super(connection, DELETED_STUDENT, ALL_STUDENTS, FIND_BY_ID_ENTITY);
     }
 
     @Override
@@ -30,7 +32,7 @@ public class StudentCRUD extends CRUD<Student> {
 
             preparedStatement.setString(1, student.getName());
             preparedStatement.setString(2, student.getSurname());
-            preparedStatement.setString(3, student.getCourseName());
+            preparedStatement.setString(3, student.getEmailStudent());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -44,7 +46,7 @@ public class StudentCRUD extends CRUD<Student> {
 
             preparedStatement.setString(1, student.getName());
             preparedStatement.setString(2, student.getSurname());
-            preparedStatement.setString(3, student.getCourseName());
+            preparedStatement.setString(3, student.getEmailStudent());
             preparedStatement.setInt(4, id);
 
             preparedStatement.executeUpdate();
@@ -61,7 +63,7 @@ public class StudentCRUD extends CRUD<Student> {
                     resultSet.getInt("id"),
                     resultSet.getString("name"),
                     resultSet.getString("surname"),
-                    resultSet.getString("course_name"));
+                    resultSet.getString("email_student"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

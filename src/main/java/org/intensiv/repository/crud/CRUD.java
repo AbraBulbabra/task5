@@ -7,22 +7,23 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class CRUD<T> {
     protected Connection connection;
-    private String deletedQwery;
+    private String deletedQuery;
     private String getAll;
     private String findByIdEntity;
 
 
-    CRUD(Connection connection, String deletedQwery, String getAll, String findByIdEntity) {
+    CRUD(Connection connection, String deletedQuery, String getAll, String findByIdEntity) {
         this.connection = connection;
-        this.deletedQwery = deletedQwery;
+        this.deletedQuery = deletedQuery;
         this.getAll = getAll;
         this.findByIdEntity = findByIdEntity;
     }
 
-    public  List<T> readEntities() {
+    public List<T> readEntities() {
         List<T> tList = new ArrayList<>();
 
         try (Statement statement = connection.createStatement()) {
@@ -38,41 +39,44 @@ public abstract class CRUD<T> {
         return tList;
     }
 
-    public T getEntityForId(int id){
+    public void deletedEntityForId(int id) {
+        Optional<T> entity = this.findById(id);
+
+        if (entity.isPresent()) {
+            T deleted = entity.get();
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(deletedQuery)) {
+
+                preparedStatement.setInt(1, id);
+                preparedStatement.executeUpdate();
+
+                System.out.println("Delete entity ->" + deleted);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public Optional<T> findById(int id) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(findByIdEntity)) {
 
             preparedStatement.setInt(1, id);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-
-            if (resultSet.next()) {
-                return entityParsing(resultSet);
-            } else {
-                throw new IndexOutOfBoundsException(String.format("id = %d нет в списке", id));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(entityParsing(resultSet));
+                } else {
+                    return Optional.empty();
+                }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Ошибка базы данных", e);
         }
     }
 
     public abstract void createEntity(T t);
 
     public abstract void updateEntityForId(int id, T t);
-
-    public  void deletedEntityForId(int id){
-        T deleted = this.getEntityForId(id);
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(deletedQwery)) {
-
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-
-            System.out.println("Delete entity ->" + deleted);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     protected abstract T entityParsing(ResultSet entity);
 }
