@@ -39,7 +39,7 @@ public abstract class CRUD<T> {
         return tList;
     }
 
-    public void deletedEntityForId(int id) {
+    public void deletedEntityForId(long id) {
         Optional<T> entity = this.findById(id);
 
         if (entity.isPresent()) {
@@ -47,7 +47,7 @@ public abstract class CRUD<T> {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(deletedQuery)) {
 
-                preparedStatement.setInt(1, id);
+                preparedStatement.setLong(1, id);
                 preparedStatement.executeUpdate();
 
                 System.out.println("Delete entity ->" + deleted);
@@ -57,10 +57,10 @@ public abstract class CRUD<T> {
         }
     }
 
-    public Optional<T> findById(int id) {
+    public Optional<T> findById(long id) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(findByIdEntity)) {
 
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -76,7 +76,7 @@ public abstract class CRUD<T> {
 
     public abstract void createEntity(T t);
 
-    public abstract void updateEntityForId(int id, T t);
+    public abstract void updateEntityForId(long id, T t);
 
     protected abstract T entityParsing(ResultSet entity);
 }

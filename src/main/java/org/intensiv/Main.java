@@ -1,12 +1,13 @@
 package org.intensiv;
 
 import org.intensiv.jdbc.starter.StarterDB;
+import org.intensiv.repository.crud.StudentCRUD;
 import org.intensiv.service.StudentService;
 
 public class Main {
     public static void main(String[] args) {
 
-        StudentService studentService = new StudentService(StarterDB.getConnection());
+        StudentService studentService = new StudentService(new StudentCRUD(StarterDB.getConnection()));
 
         System.out.println(studentService.getStudents());
 

@@ -2,12 +2,12 @@ package org.intensiv.entity;
 
 public class Student {
 
-    private int id;
+    private long id;
     private String name;
     private String surname;
     private String emailStudent;
 
-    public Student(int id, String name, String surname, String emailStudent) {
+    public Student(long id, String name, String surname, String emailStudent) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -34,11 +34,11 @@ public class Student {
                 '}';
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

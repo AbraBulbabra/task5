@@ -33,7 +33,12 @@ public class StudentCRUD extends CRUD<Student> {
             preparedStatement.setString(1, student.getName());
             preparedStatement.setString(2, student.getSurname());
             preparedStatement.setString(3, student.getEmailStudent());
-            preparedStatement.executeUpdate();
+
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Student не создан");
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -41,15 +46,16 @@ public class StudentCRUD extends CRUD<Student> {
     }
 
     @Override
-    public void updateEntityForId(int id, Student student) {
+    public void updateEntityForId(long id, Student student) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_STUDENT)) {
 
             preparedStatement.setString(1, student.getName());
             preparedStatement.setString(2, student.getSurname());
             preparedStatement.setString(3, student.getEmailStudent());
-            preparedStatement.setInt(4, id);
+            preparedStatement.setLong(4, id);
 
             preparedStatement.executeUpdate();
+
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -60,7 +66,7 @@ public class StudentCRUD extends CRUD<Student> {
     protected Student entityParsing(ResultSet resultSet) {
         try {
             return new Student(
-                    resultSet.getInt("id"),
+                    resultSet.getLong("id"),
                     resultSet.getString("name"),
                     resultSet.getString("surname"),
                     resultSet.getString("email_student"));
